@@ -41,6 +41,27 @@ Full-stack website for childhood school batch with member approval flow, events,
 5. Start server:
    - `npm run dev`
 
+## Deploy On Render
+1. Push your latest code to GitHub (including `render.yaml`).
+2. In Render dashboard, click `New +` -> `Blueprint`.
+3. Connect your GitHub repo and select this project.
+4. Render will detect `render.yaml` and create the web service automatically.
+5. In Render service `Environment`, set these values:
+   - `MONGO_URI`
+   - `JWT_SECRET`
+   - `SUPERADMIN_EMAIL`
+   - `SUPERADMIN_PASSWORD`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+6. Click `Apply` / `Deploy`.
+7. Open the Render URL after deploy is green.
+
+Notes:
+- App listens on `process.env.PORT`, already compatible with Render.
+- Super admin is auto-created at startup (if not exists) using `SUPERADMIN_EMAIL` and `SUPERADMIN_PASSWORD`.
+- Use HTTPS Render URL for login/session tests.
+
 ## Required Environment Variables
 - `PORT`
 - `MONGO_URI`
