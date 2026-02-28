@@ -1,0 +1,25 @@
+<%- include("../partials/header") %>
+<section class="card form-card">
+  <h2><i class="fa-solid fa-user-pen"></i> Update Profile</h2>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form action="/member/profile/edit" method="post" enctype="multipart/form-data">
+    <label>Name<input type="text" name="name" value="<%= member.name %>" required /></label>
+    <label>Nick Name<input type="text" name="nickName" value="<%= member.nickName || '' %>" required /></label>
+    <label>Phone<input type="text" name="phone" value="<%= member.phone %>" required /></label>
+    <label>Shift
+      <select name="shift" required>
+        <option value="day" <%= member.shift === "day" ? "selected" : "" %>>Day</option>
+        <option value="morning" <%= member.shift === "morning" ? "selected" : "" %>>Morning</option>
+      </select>
+    </label>
+    <label>College<input type="text" name="college" value="<%= member.college || '' %>" required /></label>
+    <label>University<input type="text" name="university" value="<%= member.university || '' %>" required /></label>
+    <label>Permanent Address<input type="text" name="permanentAddress" value="<%= member.permanentAddress || '' %>" required /></label>
+    <label>Current Address<input type="text" name="currentAddress" value="<%= member.currentAddress || '' %>" required /></label>
+    <label>Profession<input type="text" name="profession" value="<%= member.profession || '' %>" required /></label>
+    <label>Batch Info<input type="text" name="batchInfo" value="<%= member.batchInfo %>" required /></label>
+    <label>Profile Picture<input type="file" name="profilePicture" accept="image/*" /></label>
+    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+  </form>
+</section>
+<%- include("../partials/footer") %>

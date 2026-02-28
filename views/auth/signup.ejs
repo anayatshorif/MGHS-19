@@ -1,0 +1,48 @@
+<%- include("../partials/header") %>
+<section class="signup-shell">
+  <article class="card signup-intro">
+    <p class="signup-kicker"><i class="fa-solid fa-stars"></i> Member Registration</p>
+    <h2>Join The MGHS-19 Network</h2>
+    <p>Create your member profile to access events, announcements, and the full batch community.</p>
+    <div class="signup-badges">
+      <span><i class="fa-solid fa-user-shield"></i> Approval Required</span>
+      <span><i class="fa-solid fa-id-card"></i> Complete Profile</span>
+      <span><i class="fa-solid fa-bolt"></i> Fast Access</span>
+    </div>
+  </article>
+
+  <section class="card signup-form-card">
+    <h3><i class="fa-solid fa-user-plus"></i> Signup Form</h3>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form action="/auth/signup" method="post" enctype="multipart/form-data">
+      <div class="signup-form-grid">
+        <label>Full Name<input type="text" name="fullName" placeholder="Md Anayat Hossain" required /></label>
+        <label>Nick Name<input type="text" name="nickName" placeholder="Anayat" required /></label>
+
+        <label>Email<input type="email" name="email" placeholder="yourmail@example.com" required /></label>
+        <label>Phone<input type="text" name="phone" placeholder="01XXXXXXXXX" required /></label>
+
+        <label>Shift
+          <select name="shift" required>
+            <option value="day">Day</option>
+            <option value="morning">Morning</option>
+          </select>
+        </label>
+        <label>Profession<input type="text" name="profession" placeholder="Student / Engineer / Business" required /></label>
+
+        <label>College<input type="text" name="college" placeholder="Your college name" required /></label>
+        <label>University<input type="text" name="university" placeholder="Your university name" required /></label>
+
+        <label class="field-span-2">Permanent Address<input type="text" name="permanentAddress" placeholder="Village, Upazila, District" required /></label>
+        <label class="field-span-2">Current Address<input type="text" name="currentAddress" placeholder="House, Area, City" required /></label>
+
+        <label>Batch Info<input type="text" name="batchInfo" value="MGHS-19" required /></label>
+        <label>Profile Picture<input type="file" name="profilePicture" accept="image/*" /></label>
+
+        <label class="field-span-2">Password<input type="password" name="password" minlength="6" placeholder="Minimum 6 characters" required /></label>
+      </div>
+      <button type="submit"><i class="fa-solid fa-paper-plane"></i> Submit For Approval</button>
+    </form>
+  </section>
+</section>
+<%- include("../partials/footer") %>

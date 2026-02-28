@@ -1,0 +1,15 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <div class="member-grid">
+    <% if (!members.length) { %>
+      <p>No pictures available yet.</p>
+    <% } %>
+    <% members.forEach(member => { %>
+      <div class="member-card">
+        <img src="<%= member.profilePicture %>" alt="<%= member.name %>" />
+        <h4><%= member.name %></h4>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<%- include("../partials/footer") %>

@@ -1,0 +1,18 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-id-card"></i> My Profile</h2>
+  <img class="profile" src="<%= member.profilePicture %>" alt="<%= member.name %>" />
+  <p><strong>Name:</strong> <%= member.name %></p>
+  <p><strong>Nick Name:</strong> <%= member.nickName || "-" %></p>
+  <p><strong>Email:</strong> <%= member.email %></p>
+  <p><strong>Phone:</strong> <%= member.phone %></p>
+  <p><strong>Shift:</strong> <%= member.shift || "-" %></p>
+  <p><strong>College:</strong> <%= member.college || "-" %></p>
+  <p><strong>University:</strong> <%= member.university || "-" %></p>
+  <p><strong>Permanent Address:</strong> <%= member.permanentAddress || "-" %></p>
+  <p><strong>Current Address:</strong> <%= member.currentAddress || "-" %></p>
+  <p><strong>Profession:</strong> <%= member.profession || "-" %></p>
+  <p><strong>Batch:</strong> <%= member.batchInfo %></p>
+  <a class="btn" href="/member/profile/edit"><i class="fa-solid fa-pen-to-square"></i> Update Profile</a>
+</section>
+<%- include("../partials/footer") %>

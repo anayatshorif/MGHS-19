@@ -1,0 +1,79 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-gauge-high"></i> Member Dashboard</h2>
+  <p>Welcome, <strong><%= member.name %></strong></p>
+  <a class="btn" href="/member/events/register"><i class="fa-solid fa-calendar-plus"></i> Register Event</a>
+</section>
+
+<section class="grid-2">
+  <div class="card">
+    <h3><i class="fa-solid fa-calendar-days"></i> Events</h3>
+    <% events.forEach(event => { %>
+      <div class="item">
+        <strong><%= event.title %></strong>
+        <p><i class="fa-regular fa-calendar"></i> <%= new Date(event.eventDate).toDateString() %></p>
+        <p><i class="fa-solid fa-location-dot"></i> <%= event.location %></p>
+        <% const status = joinMap.get(event._id.toString()); %>
+        <% if (!status) { %>
+          <form action="/member/events/<%= event._id %>/join" method="post"><button><i class="fa-solid fa-handshake-angle"></i> Join Event</button></form>
+        <% } else { %>
+          <p>Join status: <strong><%= status %></strong></p>
+        <% } %>
+      </div>
+    <% }) %>
+  </div>
+
+  <div class="card">
+    <h3><i class="fa-solid fa-bullhorn"></i> Announcements</h3>
+    <% announcements.forEach(item => { %>
+      <div class="item"><strong><%= item.title %></strong><p><%= item.message %></p></div>
+    <% }) %>
+  </div>
+</section>
+
+<section class="card">
+  <h3><i class="fa-solid fa-bell"></i> Notifications</h3>
+  <% if (!notifications.length) { %>
+    <p>No notifications yet.</p>
+  <% } %>
+  <% notifications.forEach(note => { %>
+    <div class="item">
+      <strong><%= note.type === "payment" ? "Payment Update" : "Notice" %></strong>
+      <p><%= note.message %></p>
+      <p><small><%= new Date(note.createdAt).toLocaleString() %></small></p>
+    </div>
+  <% }) %>
+</section>
+
+<section class="card">
+  <h3><i class="fa-solid fa-user-group"></i> Friends List</h3>
+  <div class="manage-members-tools">
+    <form id="friends-search-form" class="manage-members-search-form" action="#" method="get">
+      <label for="friends-search">Search Friends</label>
+      <div class="manage-members-search-row">
+        <input id="friends-search" type="search" placeholder="Search by name, nick name, email or phone" />
+        <button type="submit" class="manage-members-search-btn" aria-label="Search friends">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+  <p id="friends-empty" class="manage-members-empty" hidden>Not found</p>
+  <div class="member-grid">
+    <% members.forEach(friend => { %>
+      <a
+        class="member-card-link friend-card"
+        href="/member/members/<%= friend._id %>"
+        data-search-text="<%= ((friend.name || '') + ' ' + (friend.nickName || '') + ' ' + (friend.email || '') + ' ' + (friend.phone || '')).toLowerCase() %>"
+      >
+        <div class="member-card">
+          <img src="<%= friend.profilePicture %>" alt="<%= friend.name %>" />
+          <h4><%= friend.name %></h4>
+          <p><i class="fa-solid fa-at"></i> <%= friend.nickName || "-" %></p>
+          <p><i class="fa-solid fa-phone"></i> <%= friend.phone %></p>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+</section>
+<%- include("../partials/footer") %>

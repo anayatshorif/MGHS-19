@@ -1,0 +1,18 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-address-card"></i> Member Details</h2>
+  <img class="profile" src="<%= selectedMember.profilePicture %>" alt="<%= selectedMember.name %>" />
+  <p><strong>Full Name:</strong> <%= selectedMember.name %></p>
+  <p><strong>Nick Name:</strong> <%= selectedMember.nickName || "-" %></p>
+  <p><strong>Email:</strong> <%= selectedMember.email %></p>
+  <p><strong>Phone:</strong> <%= selectedMember.phone %></p>
+  <p><strong>Shift:</strong> <%= selectedMember.shift || "-" %></p>
+  <p><strong>College:</strong> <%= selectedMember.college || "-" %></p>
+  <p><strong>University:</strong> <%= selectedMember.university || "-" %></p>
+  <p><strong>Permanent Address:</strong> <%= selectedMember.permanentAddress || "-" %></p>
+  <p><strong>Current Address:</strong> <%= selectedMember.currentAddress || "-" %></p>
+  <p><strong>Profession:</strong> <%= selectedMember.profession || "-" %></p>
+  <p><strong>Batch:</strong> <%= selectedMember.batchInfo %></p>
+  <a class="btn alt" href="/member"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+</section>
+<%- include("../partials/footer") %>

@@ -1,0 +1,290 @@
+<%- include("../partials/header") %>
+<div class="dashboard-shell" id="admin-shell">
+  <aside class="dashboard-sidebar" id="admin-side">
+    <div class="sidebar-title"><i class="fa-solid fa-shield-halved"></i> Admin Panel</div>
+    <nav class="sidebar-links">
+      <a class="admin-nav-link" href="#admin-overview" data-target="admin-overview">Overview</a>
+      <a class="admin-nav-link" href="#admin-members" data-target="admin-members">Members</a>
+      <a class="admin-nav-link" href="#admin-events" data-target="admin-events">Events</a>
+      <a class="admin-nav-link" href="#admin-announcements" data-target="admin-announcements">Announcements</a>
+      <a class="admin-nav-link" href="#admin-spotlight" data-target="admin-spotlight">Spotlight Photos</a>
+      <a class="admin-nav-link" href="#admin-requests" data-target="admin-requests">Event Join Request</a>
+    </nav>
+  </aside>
+
+  <div class="dashboard-main">
+    <div class="dashboard-head">
+      <h2><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</h2>
+      <button class="side-toggle" type="button" data-target="admin-side" aria-expanded="false" aria-label="Open menu">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+
+    <section id="admin-overview" class="stat-grid admin-pane" data-pane="admin-overview">
+      <a class="stat-card admin-jump-link" href="#admin-members" data-target="admin-members"><h4>Total Members</h4><p><strong><%= details.totalMembers %></strong></p></a>
+      <a class="stat-card admin-jump-link" href="#admin-overview" data-target="admin-overview"><h4>Pending Members</h4><p><strong><%= details.totalPendingMembers %></strong></p></a>
+      <a class="stat-card admin-jump-link" href="#admin-events" data-target="admin-events"><h4>Events</h4><p><strong><%= details.totalEvents %></strong></p></a>
+      <a class="stat-card admin-jump-link" href="#admin-announcements" data-target="admin-announcements"><h4>Announcements</h4><p><strong><%= details.totalAnnouncements %></strong></p></a>
+      <a class="stat-card admin-jump-link" href="#admin-requests" data-target="admin-requests"><h4>Event Requests</h4><p><strong><%= details.totalEventRequests %></strong></p></a>
+      <a class="stat-card admin-jump-link" href="#admin-spotlight" data-target="admin-spotlight"><h4>Spotlight Photos</h4><p><strong><%= details.totalSpotlightPhotos %></strong></p></a>
+    </section>
+
+    <section id="admin-member-requests" class="card admin-pane" data-pane="admin-overview">
+      <h3><i class="fa-solid fa-user-check"></i> Member Requests</h3>
+      <% if (!pendingMembers.length) { %><p>No pending members.</p><% } %>
+      <% pendingMembers.forEach(member => { %>
+        <div class="item">
+          <strong><%= member.name %></strong> - <%= member.email %>
+          <form class="inline-form" action="/admin/members/<%= member._id %>/approve" method="post"><button>Approve</button></form>
+          <form class="inline-form" action="/admin/members/<%= member._id %>/reject" method="post"><button class="danger">Reject</button></form>
+        </div>
+      <% }) %>
+    </section>
+
+    <section id="admin-members" class="admin-pane" data-pane="admin-members">
+      <div class="card">
+        <h3><i class="fa-solid fa-user-group"></i> Manage Members</h3>
+        <div class="manage-members-tools">
+          <form id="manage-members-form" class="manage-members-search-form" action="#" method="get">
+            <label for="manage-members-search">Search Members</label>
+            <div class="manage-members-search-row">
+              <input id="manage-members-search" type="search" placeholder="Search by name, nick name, or email" />
+              <button type="submit" class="manage-members-search-btn" aria-label="Search members">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+        <p id="manage-members-empty" class="manage-members-empty" hidden>Not found</p>
+        <div id="manage-members-list">
+        <% members.forEach(member => { %>
+          <div class="item manage-member-item" data-member-id="<%= member._id %>" data-search-text="<%= ((member.name || '') + ' ' + (member.nickName || '') + ' ' + (member.email || '')).toLowerCase() %>">
+            <div class="manage-member-info">
+              <img
+                class="manage-member-avatar"
+                src="<%= member.profilePicture || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png' %>"
+                alt="<%= member.name %>"
+              />
+              <div>
+                <p class="manage-member-name"><strong><%= member.name %></strong></p>
+                <p class="manage-member-nick">Nick: <%= member.nickName || "-" %></p>
+                <p class="manage-member-email"><%= member.email %></p>
+                <p class="manage-member-status">Status: <%= member.status %></p>
+              </div>
+            </div>
+            <form class="manage-member-action" action="/admin/members/<%= member._id %>/delete" method="post">
+              <button class="danger"><i class="fa-solid fa-trash"></i> Remove</button>
+            </form>
+          </div>
+        <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin-events" class="grid-2 admin-pane" data-pane="admin-events">
+      <div class="card">
+        <h3><i class="fa-solid fa-calendar-plus"></i> Create Event</h3>
+        <form action="/admin/events" method="post">
+          <label>Title<input type="text" name="title" required /></label>
+          <label>Description<textarea name="description" required></textarea></label>
+          <label>Date<input type="date" name="eventDate" required /></label>
+          <label>Location<input type="text" name="location" required /></label>
+          <label>Event Group Picture URL<input type="url" name="coverImage" placeholder="https://..." /></label>
+          <button><i class="fa-solid fa-plus"></i> Create Event</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-calendar-days"></i> Event CRUD</h3>
+        <% events.forEach(event => { %>
+          <details class="item event-crud-item stacked-crud-item">
+            <summary class="event-crud-summary">
+              <div>
+                <strong><%= event.title %></strong>
+                <p>
+                  <i class="fa-regular fa-calendar"></i>
+                  <%= new Date(event.eventDate).toDateString() %>
+                  <span class="event-crud-dot">|</span>
+                  <i class="fa-solid fa-location-dot"></i>
+                  <%= event.location %>
+                </p>
+              </div>
+              <span class="event-crud-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="event-crud-body">
+              <div class="event-crud-content">
+                <form class="crud-update-form" action="/admin/events/<%= event._id %>/update" method="post">
+                  <label>Title<input type="text" name="title" value="<%= event.title %>" required /></label>
+                  <label class="field-full">Description<textarea name="description" required><%= event.description %></textarea></label>
+                  <label>Date<input type="date" name="eventDate" value="<%= new Date(event.eventDate).toISOString().split('T')[0] %>" required /></label>
+                  <label>Location<input type="text" name="location" value="<%= event.location %>" required /></label>
+                  <label>Cover URL<input type="url" name="coverImage" value="<%= event.coverImage || '' %>" /></label>
+                  <button>Update Event</button>
+                </form>
+                <form class="crud-delete-form" action="/admin/events/<%= event._id %>/delete" method="post"><button class="danger">Delete Event</button></form>
+              </div>
+            </div>
+          </details>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="admin-announcements" class="grid-2 admin-pane" data-pane="admin-announcements">
+      <div class="card">
+        <h3><i class="fa-solid fa-bullhorn"></i> Create Announcement</h3>
+        <form action="/admin/announcements" method="post">
+          <label>Title<input type="text" name="title" required /></label>
+          <label>Message<textarea name="message" required></textarea></label>
+          <button><i class="fa-solid fa-paper-plane"></i> Post</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-pen"></i> Announcement CRUD</h3>
+        <% announcements.forEach(item => { %>
+          <details class="item admin-fold-item stacked-crud-item" data-fold-group="announcements">
+            <summary class="event-crud-summary">
+              <div>
+                <strong><%= item.title %></strong>
+                <p class="crud-summary-sub"><%= item.message %></p>
+              </div>
+              <span class="event-crud-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="event-crud-body">
+              <div class="event-crud-content">
+                <form class="crud-update-form" action="/admin/announcements/<%= item._id %>/update" method="post">
+                  <label>Title<input type="text" name="title" value="<%= item.title %>" required /></label>
+                  <label class="field-full">Message<textarea name="message" required><%= item.message %></textarea></label>
+                  <button>Update Announcement</button>
+                </form>
+                <form class="crud-delete-form" action="/admin/announcements/<%= item._id %>/delete" method="post"><button class="danger">Delete Announcement</button></form>
+              </div>
+            </div>
+          </details>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="admin-spotlight" class="grid-2 admin-pane" data-pane="admin-spotlight">
+      <div class="card">
+        <h3><i class="fa-solid fa-images"></i> Add Spotlight Photos</h3>
+        <form action="/admin/spotlight-photos" method="post" enctype="multipart/form-data">
+          <label>Photo Set Title<input type="text" name="title" placeholder="Reunion Night Moments" required /></label>
+          <label>Location<input type="text" name="location" placeholder="MGHS Main Auditorium" /></label>
+          <label>Event Date<input type="date" name="eventDate" /></label>
+          <label>Upload Event Photos (max 8)<input type="file" name="photos" accept="image/*" multiple required /></label>
+          <button><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-photo-film"></i> Spotlight Photo CRUD</h3>
+        <% spotlightPhotos.forEach(photo => { %>
+          <details class="item admin-fold-item spotlight-crud-item stacked-crud-item" data-fold-group="spotlight">
+            <summary class="event-crud-summary">
+              <div class="spotlight-summary">
+                <img src="<%= photo.imageUrl %>" alt="<%= photo.title %>" class="fold-thumb" />
+                <div>
+                  <strong><%= photo.title %></strong>
+                  <p>
+                    <i class="fa-solid fa-location-dot"></i> <%= photo.location || "MGHS Campus" %>
+                    <span class="event-crud-dot">|</span>
+                    <i class="fa-regular fa-calendar"></i> <%= photo.eventDate ? new Date(photo.eventDate).toDateString() : "Date not set" %>
+                  </p>
+                </div>
+              </div>
+              <span class="event-crud-toggle"><i class="fa-solid fa-chevron-down"></i></span>
+            </summary>
+            <div class="event-crud-body">
+              <div class="event-crud-content">
+                <img src="<%= photo.imageUrl %>" alt="<%= photo.title %>" class="spotlight-thumb" />
+                <form class="crud-update-form" action="/admin/spotlight-photos/<%= photo._id %>/update" method="post">
+                  <label>Title<input type="text" name="title" value="<%= photo.title %>" required /></label>
+                  <label>Location<input type="text" name="location" value="<%= photo.location || '' %>" /></label>
+                  <label>Date<input type="date" name="eventDate" value="<%= photo.eventDate ? new Date(photo.eventDate).toISOString().split('T')[0] : '' %>" /></label>
+                  <button><i class="fa-solid fa-pen-to-square"></i> Update Spotlight</button>
+                </form>
+                <form class="crud-delete-form" action="/admin/spotlight-photos/<%= photo._id %>/delete" method="post"><button class="danger"><i class="fa-solid fa-trash"></i> Delete Spotlight</button></form>
+              </div>
+            </div>
+          </details>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="admin-requests" class="card admin-pane" data-pane="admin-requests">
+      <h3><i class="fa-solid fa-handshake"></i> Event Join Requests</h3>
+      <div class="manage-members-tools">
+        <form id="event-join-search-form" class="manage-members-search-form" action="#" method="get">
+          <label for="event-join-search">Search Request Members</label>
+          <div class="manage-members-search-row">
+            <input id="event-join-search" type="search" placeholder="Search by name, nick name, phone or event" />
+            <button type="submit" class="manage-members-search-btn" aria-label="Search requests">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+      <p id="event-join-empty" class="manage-members-empty" hidden>Not found</p>
+
+      <% const unpaidJoins = joins.filter(j => (j.paymentStatus || "unpaid") === "unpaid"); %>
+      <% const paidJoins = joins.filter(j => (j.paymentStatus || "unpaid") === "paid"); %>
+
+      <div class="request-lists">
+        <div class="request-list-card">
+          <h4><i class="fa-solid fa-wallet"></i> Unpaid Members</h4>
+          <% if (!unpaidJoins.length) { %><p>No unpaid requests.</p><% } %>
+          <% unpaidJoins.forEach(join => { %>
+            <div
+              class="item request-line event-join-item"
+              data-search-text="<%= ((join.member?.name || '') + ' ' + (join.member?.nickName || '') + ' ' + (join.member?.phone || '') + ' ' + (join.event?.title || '')).toLowerCase() %>"
+            >
+              <div class="request-line-main">
+                <img
+                  src="<%= join.member?.profilePicture || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png' %>"
+                  alt="<%= join.member?.name || 'Member' %>"
+                  class="mini-avatar"
+                />
+                <div>
+                  <p><strong><%= join.member?.name || '-' %></strong> (<%= join.member?.nickName || '-' %>)</p>
+                  <p><%= join.member?.phone || '-' %> | Event: <%= join.event?.title || '-' %></p>
+                </div>
+              </div>
+              <div class="request-line-actions">
+                <form class="inline-form" action="/admin/events/join/<%= join._id %>/payment-paid" method="post"><button>Mark Paid</button></form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="request-list-card">
+          <h4><i class="fa-solid fa-circle-check"></i> Paid Members</h4>
+          <% if (!paidJoins.length) { %><p>No paid requests.</p><% } %>
+          <% paidJoins.forEach(join => { %>
+            <div
+              class="item request-line event-join-item"
+              data-search-text="<%= ((join.member?.name || '') + ' ' + (join.member?.nickName || '') + ' ' + (join.member?.phone || '') + ' ' + (join.event?.title || '')).toLowerCase() %>"
+            >
+              <div class="request-line-main">
+                <img
+                  src="<%= join.member?.profilePicture || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png' %>"
+                  alt="<%= join.member?.name || 'Member' %>"
+                  class="mini-avatar"
+                />
+                <div>
+                  <p><strong><%= join.member?.name || '-' %></strong> (<%= join.member?.nickName || '-' %>)</p>
+                  <p><%= join.member?.phone || '-' %> | Event: <%= join.event?.title || '-' %></p>
+                </div>
+              </div>
+              <div class="request-line-actions">
+                <form class="inline-form" action="/admin/events/join/<%= join._id %>/payment-unpaid" method="post"><button class="danger">Mark Unpaid</button></form>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+<%- include("../partials/footer") %>

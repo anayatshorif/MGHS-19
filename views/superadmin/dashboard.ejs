@@ -1,0 +1,122 @@
+<%- include("../partials/header") %>
+<div class="dashboard-shell" id="superadmin-shell">
+  <aside class="dashboard-sidebar" id="superadmin-side">
+    <div class="sidebar-title"><i class="fa-solid fa-screwdriver-wrench"></i> Super Admin</div>
+    <nav class="sidebar-links">
+      <a href="#sa-overview">Overview</a>
+      <a href="#sa-admins">Admins</a>
+      <a href="#sa-members">Members</a>
+      <a href="#sa-events">Events</a>
+      <a href="#sa-announcements">Announcements</a>
+    </nav>
+  </aside>
+
+  <div class="dashboard-main">
+    <div class="dashboard-head">
+      <h2><i class="fa-solid fa-screwdriver-wrench"></i> Super Admin Dashboard</h2>
+      <button class="side-toggle" type="button" data-target="superadmin-side" aria-expanded="false" aria-label="Open menu">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+
+    <section id="sa-overview" class="stat-grid">
+      <article class="stat-card"><h4>Total Users</h4><p><strong><%= details.totalUsers %></strong></p></article>
+      <article class="stat-card"><h4>Admins</h4><p><strong><%= details.totalAdmins %></strong></p></article>
+      <article class="stat-card"><h4>Members</h4><p><strong><%= details.totalMembers %></strong></p></article>
+      <article class="stat-card"><h4>Pending Members</h4><p><strong><%= details.totalPendingMembers %></strong></p></article>
+      <article class="stat-card"><h4>Events</h4><p><strong><%= details.totalEvents %></strong></p></article>
+      <article class="stat-card"><h4>Announcements</h4><p><strong><%= details.totalAnnouncements %></strong></p></article>
+      <article class="stat-card"><h4>Event Requests</h4><p><strong><%= details.totalEventRequests %></strong></p></article>
+      <article class="stat-card"><h4>Spotlight Photos</h4><p><strong><%= details.totalSpotlightPhotos %></strong></p></article>
+    </section>
+
+    <section id="sa-admins" class="grid-2">
+      <div class="card">
+        <h3><i class="fa-solid fa-user-shield"></i> Create Admin</h3>
+        <form action="/superadmin/admins" method="post" enctype="multipart/form-data">
+          <label>Name<input type="text" name="name" required /></label>
+          <label>Email<input type="email" name="email" required /></label>
+          <label>Phone<input type="text" name="phone" required /></label>
+          <label>Batch Info<input type="text" name="batchInfo" value="MGHS-19" required /></label>
+          <label>Password<input type="password" name="password" minlength="6" required /></label>
+          <label>Role
+            <select name="role">
+              <option value="admin">Admin</option>
+              <option value="superadmin">Super Admin</option>
+            </select>
+          </label>
+          <label>Profile Picture<input type="file" name="profilePicture" accept="image/*" /></label>
+          <button><i class="fa-solid fa-user-plus"></i> Create</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-users-gear"></i> Admin List</h3>
+        <% admins.forEach(a => { %>
+          <div class="item">
+            <strong><%= a.name %></strong> - <%= a.email %> (<%= a.role %>)
+            <form class="inline-form" action="/superadmin/admins/<%= a._id %>/delete" method="post">
+              <button class="danger"><i class="fa-solid fa-trash"></i> Delete</button>
+            </form>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="sa-members" class="grid-2">
+      <div class="card">
+        <h3><i class="fa-solid fa-user-check"></i> Approve Members</h3>
+        <% pendingMembers.forEach(member => { %>
+          <div class="item">
+            <strong><%= member.name %></strong> - <%= member.email %>
+            <form class="inline-form" action="/superadmin/members/<%= member._id %>/approve" method="post"><button>Approve</button></form>
+            <form class="inline-form" action="/superadmin/members/<%= member._id %>/reject" method="post"><button class="danger">Reject</button></form>
+          </div>
+        <% }) %>
+      </div>
+
+      <div class="card">
+        <h3><i class="fa-solid fa-user-minus"></i> Remove Members</h3>
+        <% members.forEach(m => { %>
+          <div class="item">
+            <strong><%= m.name %></strong> - <%= m.email %>
+            <form class="inline-form" action="/superadmin/members/<%= m._id %>/delete" method="post"><button class="danger">Remove</button></form>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <section id="sa-events" class="card">
+      <h3><i class="fa-solid fa-calendar-plus"></i> Event Controls</h3>
+      <form action="/superadmin/events" method="post">
+        <label>Title<input type="text" name="title" required /></label>
+        <label>Description<textarea name="description" required></textarea></label>
+        <label>Date<input type="date" name="eventDate" required /></label>
+        <label>Location<input type="text" name="location" required /></label>
+        <label>Cover URL<input type="url" name="coverImage" /></label>
+        <button>Create Event</button>
+      </form>
+      <% events.forEach(event => { %>
+        <div class="item"><%= event.title %>
+          <form class="inline-form" action="/superadmin/events/<%= event._id %>/delete" method="post"><button class="danger">Delete</button></form>
+        </div>
+      <% }) %>
+    </section>
+
+    <section id="sa-announcements" class="card">
+      <h3><i class="fa-solid fa-bullhorn"></i> Announcement Controls</h3>
+      <form action="/superadmin/announcements" method="post">
+        <label>Title<input type="text" name="title" required /></label>
+        <label>Message<textarea name="message" required></textarea></label>
+        <button>Post</button>
+      </form>
+      <% announcements.forEach(item => { %>
+        <div class="item"><%= item.title %>
+          <form class="inline-form" action="/superadmin/announcements/<%= item._id %>/delete" method="post"><button class="danger">Delete</button></form>
+        </div>
+      <% }) %>
+    </section>
+  </div>
+</div>
+<%- include("../partials/footer") %>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | MGHS-19</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="/public/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-wrap">
+      <h1 class="logo"><a href="/"><i class="fa-solid fa-graduation-cap"></i> MGHS-19</a></h1>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav id="site-nav">
+        <% if (!currentUser) { %>
+          <a class="nav-link" href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <a class="nav-link" href="/about"><i class="fa-solid fa-circle-info"></i> About</a>
+          <a class="nav-link" href="/pictures"><i class="fa-solid fa-user-group"></i> Backbenchers</a>
+          <a class="mobile-main" href="/auth/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+          <a class="nav-cta nav-link" href="/auth/signup"><i class="fa-solid fa-user-plus"></i> Signup</a>
+        <% } else if (currentUser.role === 'superadmin') { %>
+          <a class="nav-cta mobile-main" href="/superadmin"><i class="fa-solid fa-screwdriver-wrench"></i> Super Admin</a>
+          <form action="/auth/logout" method="post" class="inline-form nav-link"><button><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button></form>
+        <% } else if (currentUser.role === 'admin') { %>
+          <a class="nav-cta mobile-main" href="/admin"><i class="fa-solid fa-shield-halved"></i> Admin Dashboard</a>
+          <form action="/auth/logout" method="post" class="inline-form nav-link"><button><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button></form>
+        <% } else { %>
+          <a class="mobile-main profile-nav" href="/member/profile" title="My Profile">
+            <img class="profile-avatar" src="<%= currentUser.profilePicture || 'https://cdn-icons-png.flaticon.com/512/3177/3177440.png' %>" alt="My Profile" />
+          </a>
+          <form action="/auth/logout" method="post" class="inline-form nav-link"><button><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button></form>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="container fade-in">

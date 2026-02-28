@@ -1,0 +1,15 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-users"></i> Member List</h2>
+  <div class="member-grid">
+    <% members.forEach(member => { %>
+      <div class="member-card">
+        <img src="<%= member.profilePicture %>" alt="<%= member.name %>" />
+        <h4><%= member.name %></h4>
+        <p><i class="fa-solid fa-id-badge"></i> <%= member.batchInfo %></p>
+        <p><i class="fa-regular fa-envelope"></i> <%= member.email %></p>
+      </div>
+    <% }) %>
+  </div>
+</section>
+<%- include("../partials/footer") %>

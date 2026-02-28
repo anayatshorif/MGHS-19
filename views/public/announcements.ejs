@@ -1,0 +1,41 @@
+<%- include("../partials/header") %>
+<% const featured = announcements.length ? announcements[0] : null; %>
+<section class="card">
+  <h2><i class="fa-solid fa-bullhorn"></i> Announcements</h2>
+  <% if (!featured) { %>
+    <p>No announcements available.</p>
+  <% } else { %>
+    <article class="announcement-showcase">
+      <div class="announcement-copy">
+        <span class="announce-badge"><i class="fa-solid fa-star"></i> Upcoming Batch Highlight</span>
+        <h3><%= featured.title %></h3>
+        <p><%= featured.message %></p>
+        <div class="announce-meta">
+          <p><i class="fa-regular fa-calendar"></i> <%= new Date(featured.createdAt).toDateString() %></p>
+          <p><i class="fa-solid fa-location-dot"></i> MGHS-19 Community</p>
+        </div>
+        <div class="announce-actions">
+          <a class="btn" href="<%= currentUser && currentUser.role === 'member' ? '/member/events/register' : '/auth/login' %>">Join Now</a>
+          <a class="btn alt" href="/events">View Events</a>
+        </div>
+      </div>
+      <div class="announcement-visual" aria-hidden="true"></div>
+    </article>
+  <% } %>
+</section>
+
+<% if (announcements.length > 1) { %>
+  <section class="card">
+    <h3><i class="fa-solid fa-newspaper"></i> More Updates</h3>
+    <div class="announcement-grid">
+      <% announcements.slice(1).forEach(item => { %>
+        <div class="item">
+          <h4><%= item.title %></h4>
+          <p><%= item.message %></p>
+          <small><i class="fa-regular fa-clock"></i> <%= new Date(item.createdAt).toDateString() %></small>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+<% } %>
+<%- include("../partials/footer") %>

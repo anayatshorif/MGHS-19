@@ -1,0 +1,38 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-calendar-plus"></i> Event Registration</h2>
+  <p>Select an event and submit your participation request. Admin will review and approve.</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <% if (success) { %><p class="ok"><%= success %></p><% } %>
+</section>
+
+<section class="card form-card">
+  <form action="/member/events/register" method="post">
+    <label>Choose Event
+      <select name="eventId" required>
+        <option value="">Select an event</option>
+        <% events.forEach(event => { %>
+          <option value="<%= event._id %>" <%= selectedEventId === event._id.toString() ? 'selected' : '' %>>
+            <%= event.title %> - <%= new Date(event.eventDate).toDateString() %> - <%= event.location %>
+          </option>
+        <% }) %>
+      </select>
+    </label>
+    <button type="submit"><i class="fa-solid fa-paper-plane"></i> Submit Registration</button>
+  </form>
+</section>
+
+<section class="card">
+  <h3><i class="fa-solid fa-list-check"></i> My Event Requests</h3>
+  <% if (!events.length) { %>
+    <p>No events available right now.</p>
+  <% } %>
+  <% events.forEach(event => { const status = joinMap.get(event._id.toString()); if (status) { %>
+    <div class="item">
+      <strong><%= event.title %></strong>
+      <p><i class="fa-regular fa-calendar"></i> <%= new Date(event.eventDate).toDateString() %></p>
+      <p>Status: <strong><%= status %></strong></p>
+    </div>
+  <% } }) %>
+</section>
+<%- include("../partials/footer") %>

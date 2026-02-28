@@ -1,0 +1,16 @@
+<%- include("../partials/header") %>
+<section class="login-shell">
+  <section class="card login-single-card">
+    <div class="login-welcome">
+      <h2><i class="fa-solid fa-right-to-bracket"></i> Welcome Back to MGHS-19</h2>
+    </div>
+    <% if (msg === 'pending') { %><p class="ok">Signup complete. Wait for admin approval.</p><% } %>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <form action="/auth/login" method="post">
+      <label>Email<input type="email" name="email" placeholder="yourmail@example.com" required /></label>
+      <label>Password<input type="password" name="password" placeholder="Enter your password" required /></label>
+      <button type="submit"><i class="fa-solid fa-lock-open"></i> Login</button>
+    </form>
+  </section>
+</section>
+<%- include("../partials/footer") %>

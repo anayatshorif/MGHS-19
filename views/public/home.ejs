@@ -1,0 +1,72 @@
+<%- include("../partials/header") %>
+<section class="card landing-hero">
+  <h2><i class="fa-solid fa-star"></i> Welcome Back, MGHS-19</h2>
+  <p>This is the official batch platform to connect with friends, share memories, and stay active in every event.</p>
+  <div class="hero-actions">
+    <a class="btn" href="/auth/signup"><i class="fa-solid fa-user-plus"></i> Join Batch</a>
+    <a class="btn alt" href="/pictures"><i class="fa-solid fa-image"></i> View Pictures</a>
+  </div>
+</section>
+
+<section class="card carousel-card">
+  <div class="carousel-head">
+    <h3><i class="fa-solid fa-camera-retro"></i> Backbenchers Spotlight</h3>
+    <p>Group moments from batch events, loud laughs, and legendary reunions.</p>
+  </div>
+  <% if (!(spotlightEvents || []).length) { %>
+    <p>No event group pictures available for slider yet.</p>
+  <% } else { %>
+    <div class="carousel" data-carousel>
+      <button class="carousel-btn prev" type="button" aria-label="Previous slide"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="carousel-track">
+        <% (spotlightEvents || []).forEach((event, idx) => { %>
+          <article class="carousel-slide <%= idx === 0 ? 'active' : '' %>">
+            <img src="<%= event.coverImage || 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80' %>" alt="<%= event.title %>" />
+            <div class="carousel-overlay">
+              <h4><%= event.title %></h4>
+              <p><%= event.location %> | <%= new Date(event.eventDate).toDateString() %></p>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+      <button class="carousel-btn next" type="button" aria-label="Next slide"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="carousel-dots">
+        <% (spotlightEvents || []).forEach((_, idx) => { %>
+          <button type="button" class="carousel-dot <%= idx === 0 ? 'active' : '' %>" data-index="<%= idx %>" aria-label="Go to slide <%= idx + 1 %>"></button>
+        <% }) %>
+      </div>
+    </div>
+  <% } %>
+</section>
+
+<% const homeFeatured = announcements.length ? announcements[0] : null; %>
+<section class="card">
+  <h3><i class="fa-solid fa-bullhorn"></i> Latest Announcement</h3>
+  <% if (!homeFeatured) { %>
+    <p>No announcements yet.</p>
+  <% } else { %>
+    <article class="announcement-showcase">
+      <div class="announcement-copy">
+        <span class="announce-badge"><i class="fa-solid fa-star"></i> Upcoming Batch Highlight</span>
+        <h3><%= homeFeatured.title %></h3>
+        <p><%= homeFeatured.message %></p>
+        <div class="announce-meta">
+          <p><i class="fa-regular fa-calendar"></i> <%= new Date(homeFeatured.createdAt).toDateString() %></p>
+          <p><i class="fa-solid fa-location-dot"></i> MGHS-19 Community</p>
+        </div>
+        <div class="announce-actions">
+          <a class="btn" href="<%= currentUser && currentUser.role === 'member' ? '/member/events/register' : '/auth/login' %>">Register Now</a>
+          <a class="btn alt" href="/announcements">View Details</a>
+        </div>
+      </div>
+      <div class="announcement-visual" aria-hidden="true"></div>
+    </article>
+  <% } %>
+</section>
+
+<section class="card cta-section">
+  <h2>Ready to reconnect?</h2>
+  <p>Create your profile, find your old friends, and bring the batch vibe back louder than ever.</p>
+  <a class="btn cta-main" href="/auth/signup">Create Your Profile</a>
+</section>
+<%- include("../partials/footer") %>

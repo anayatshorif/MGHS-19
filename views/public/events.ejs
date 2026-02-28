@@ -1,0 +1,14 @@
+<%- include("../partials/header") %>
+<section class="card">
+  <h2><i class="fa-solid fa-calendar-days"></i> Events</h2>
+  <% if (!events.length) { %><p>No events available.</p><% } %>
+  <% events.forEach(event => { %>
+    <div class="item">
+      <h4><%= event.title %></h4>
+      <p><%= event.description %></p>
+      <p><i class="fa-regular fa-calendar"></i> <strong>Date:</strong> <%= new Date(event.eventDate).toDateString() %></p>
+      <p><i class="fa-solid fa-location-dot"></i> <strong>Location:</strong> <%= event.location %></p>
+    </div>
+  <% }) %>
+</section>
+<%- include("../partials/footer") %>
